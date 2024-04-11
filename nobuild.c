@@ -3,7 +3,9 @@
 #include "./nob.h"
 
 #define CC "cc"
-#define CFLAGS "-Wall", "-Wextra", "-std=c99", "-pedantic"
+#define CFLAGS "-Wall", "-Wextra", "-std=c99", "-pedantic", "-I", PATH(RAYLIB_PATH, "src"), "-I", PATH(RAYGUI_PATH, "src")
+
+#define LDFLAGS "-l", "m"
 
 void build_tool(const char *tool)
 {
@@ -12,28 +14,39 @@ void build_tool(const char *tool)
 	CMD(CC, CFLAGS, "-o", NOEXT(tool_path), tool_path);
 }
 
+void ensure_raygui()
+{
+	if (!PATH_EXISTS(RAYGUI_PATH))
+	{
+		INFO("Raygui not found, cloning...");
+		CMD("git", "clone", "https://github.com/raysan5/raygui.git", RAYGUI_PATH);
+	}
+	CMD("git", "-C", RAYGUI_PATH, "checkout", "4.0");
+}
+
 void ensure_raylib()
 {
-	if (!PATH_EXISTS("./raylib"))
+	if (!PATH_EXISTS(RAYLIB_PATH))
 	{
 		INFO("Raylib not found, cloning...");
-		CMD("git", "clone", "https://github.com/raysan5/raylib.git");
+		CMD("git", "clone", "https://github.com/raysan5/raylib.git", RAYLIB_PATH);
 	}
-	CMD("git", "-C", "./raylib", "checkout", "5.0");
+	CMD("git", "-C", RAYLIB_PATH, "checkout", "5.0");
 }
 
 void build_raylib_static()
 {
 	ensure_raylib();
 	INFO("Building Raylib[static]");
-	CMD("make", "-C", "./raylib/src", "-j", NPROC, "PLATFORM=PLATFORM_DESKTOP");
+	CMD("make", "-C", PATH(RAYLIB_PATH, "src"), "-j", NPROC, "PLATFORM=PLATFORM_DESKTOP");
 }
 
 void build()
 {
 	build_raylib_static();	
+	ensure_raygui();
 
-	CMD(CC, CFLAGS, "./main.c", "./raylib/src/libraylib.a", "-o", "rplot", "-I", "./raylib/src", "-l", "m");
+	CMD(CC, CFLAGS, "./main.c", PATH(RAYLIB_PATH, "src/libraylib.a"), "-o", "rplot", LDFLAGS);
 }
 
 int main(int argc, char **argv)
