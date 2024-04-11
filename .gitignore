@@ -1,5 +1,3 @@
-rplot
-nob
-nob.old
+build/
 raylib/
 raygui/
