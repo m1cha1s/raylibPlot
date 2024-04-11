@@ -5,7 +5,7 @@
 #define CC "cc"
 #define CFLAGS "-Wall", "-Wextra", "-std=c99", "-pedantic", "-I", PATH(RAYLIB_PATH, "src"), "-I", PATH(RAYGUI_PATH, "src")
 
-#define LDFLAGS "-l", "m"
+#define LDFLAGS "-l", "m", "-l", "pthread", "-l", "dl"
 
 void build_tool(const char *tool)
 {
