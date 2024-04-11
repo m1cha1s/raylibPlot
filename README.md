@@ -1,9 +1,6 @@
 # How to build
 ```bash
-cc -o nob nobuild.c
-./nob
-# or to build and run
-./nob r
+make
 ```
 
 # Known issues

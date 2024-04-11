@@ -7,6 +7,8 @@
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>
 
+#include "serial.h"
+
 #define PLOT_LEN 100 
 
 typedef struct
@@ -116,7 +118,7 @@ int main(int argc, char **argv)
 		
 
 		/* Connect button */
-		if (GuiButton((Rectangle){.x=120, .y=610, .width=50, .height=20}, "CONNECT"))
+		if (GuiButton((Rectangle){.x=120, .y=610, .width=50, .height=20}, serial_is_open() ? "DISCONNECT" : "CONNECT"))
 			printf("Conecting to %s...\n", serialPort);
 
 		EndDrawing();
